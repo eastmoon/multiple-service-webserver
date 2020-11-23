@@ -142,7 +142,7 @@ goto end
     docker run -ti -d ^
         -v %cd%\src\client\react\:/repo^
         -v %cd%\cache\client-react\modules/:/repo/node_modules^
-        -v %cd%\cache\client-react\publish/:/repo/build^
+        -v %cd%\cache\client-react\publish/:/repo/dist^
         -p 8081:3000^
         --name %PROJECT_NAME%-client-react^
         msw.react:%PROJECT_NAME%
@@ -193,65 +193,65 @@ goto end
 
 :: ------------------- Command "vue" mathod -------------------
 
-:cli-react (
+:cli-vue (
     @rem Initial cache
-    IF NOT EXIST cache\clietn-react\modules (
-        mkdir cache\client-react\modules
+    IF NOT EXIST cache\clietn-vue\modules (
+        mkdir cache\client-vue\modules
     )
-    IF NOT EXIST cache\client-react\publish (
-        mkdir cache\client-react\publish
+    IF NOT EXIST cache\client-vue\publish (
+        mkdir cache\client-vue\publish
     )
     echo ^> Build image
     docker build --rm^
-        -t msw.react:%PROJECT_NAME%^
-        ./docker/client/react
+        -t msw.vue:%PROJECT_NAME%^
+        ./docker/client/vue
 
     echo ^> Startup docker container instance
-    docker rm -f %PROJECT_NAME%-client-react
+    docker rm -f %PROJECT_NAME%-client-vue
     docker run -ti -d ^
-        -v %cd%\src\client\react\:/repo^
-        -v %cd%\cache\client-react\modules/:/repo/node_modules^
-        -v %cd%\cache\client-react\publish/:/repo/build^
-        -p 8081:3000^
-        --name %PROJECT_NAME%-client-react^
-        msw.react:%PROJECT_NAME%
+        -v %cd%\src\client\vue\:/repo^
+        -v %cd%\cache\client-vue\modules/:/repo/node_modules^
+        -v %cd%\cache\client-vue\publish/:/repo/build^
+        -p 8082:4000^
+        --name %PROJECT_NAME%-client-vue^
+        msw.vue:%PROJECT_NAME%
 
     echo ^> Install package dependencies
-    docker exec -ti %PROJECT_NAME%-client-react^ bash -l -c "yarn install"
+    docker exec -ti %PROJECT_NAME%-client-vue^ bash -l -c "yarn install"
 
     @rem Execute command
-    IF defined DEVELOPER_REACT (
+    IF defined DEVELOPER_VUE (
         echo ^> Start deveopment server
-        docker exec -ti %PROJECT_NAME%-client-react^ bash -l -c "yarn start"
+        docker exec -ti %PROJECT_NAME%-client-vue^ bash -l -c "yarn dev"
     )
-    IF defined INTO_REACT (
+    IF defined INTO_VUE (
         echo ^> Into container instance
-        docker exec -ti %PROJECT_NAME%-client-react^ bash
+        docker exec -ti %PROJECT_NAME%-client-vue^ bash
     )
-    IF defined BUILD_REACT (
+    IF defined BUILD_VUE (
         echo ^> Build project
-        docker exec -ti %PROJECT_NAME%-client-react^ bash -l -c "yarn build"
+        docker exec -ti %PROJECT_NAME%-client-vue^ bash -l -c "yarn build"
     )
     goto end
 )
 
-:cli-react-args (
-    set BUILD_REACT=1
+:cli-vue-args (
+    set BUILD_VUE=1
     for %%p in (%*) do (
         if "%%p"=="--dev" (
-            set DEVELOPER_REACT=1
-            set BUILD_REACT=
+            set DEVELOPER_VUE=1
+            set BUILD_VUE=
         )
         if "%%p"=="--into" (
-            set INTO_REACT=1
-            set BUILD_REACT=
+            set INTO_VUE=1
+            set BUILD_VUE=
         )
     )
     goto end
 )
 
-:cli-react-help (
-    echo Build react.js project.
+:cli-vue-help (
+    echo Build vue.js project.
     echo.
     echo Options:
     echo      --dev             Run dev mode.

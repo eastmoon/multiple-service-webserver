@@ -19,6 +19,8 @@ npx create-react-app .
 ```
 > [How to use npx: the npm package runner](https://blog.scottlogic.com/2018/04/05/npx-the-npm-package-runner.html)
 
++ ```dockerw react --dev``` 啟動 react 專案的開發伺服器，Dev Server 3000、Docker port: 8081
+
 #### Vue
 
 使用 create-vue-app 工具建立專案
@@ -28,3 +30,5 @@ npx create-react-app .
 npx create-vue-app .
 ```
 > [How to use npx: the npm package runner](https://blog.scottlogic.com/2018/04/05/npx-the-npm-package-runner.html)
+
++ ```dockerw vue --dev``` 啟動 vue 專案的開發伺服器，Dev Server 4000、Docker port: 8082
