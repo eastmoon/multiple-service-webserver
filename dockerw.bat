@@ -211,7 +211,7 @@ goto end
     docker run -ti -d ^
         -v %cd%\src\client\vue\:/repo^
         -v %cd%\cache\client-vue\modules/:/repo/node_modules^
-        -v %cd%\cache\client-vue\publish/:/repo/build^
+        -v %cd%\cache\client-vue\publish/:/repo/dist^
         -p 8082:4000^
         --name %PROJECT_NAME%-client-vue^
         msw.vue:%PROJECT_NAME%
