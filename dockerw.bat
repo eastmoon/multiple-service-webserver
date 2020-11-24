@@ -339,38 +339,60 @@ goto end
     IF NOT EXIST cache\node\modules (
         mkdir cache\node\modules
     )
-    echo ^> Build image
-    docker build --rm^
-        -t msw.node:%PROJECT_NAME%^
-        ./docker/server/node
+    IF NOT EXIST cache\node\publish (
+        mkdir cache\node\publish
+    )
 
-    echo ^> Startup docker container instance
-    docker rm -f %PROJECT_NAME%-server-node
-    docker run -ti -d ^
-        -v %cd%\src\server\node\:/repo^
-        -v %cd%\cache\node\modules/:/repo/node_modules^
-        -p 8001:3000^
-        --name %PROJECT_NAME%-server-node^
-        msw.node:%PROJECT_NAME%
-
-    echo ^> Install package dependencies
-    docker exec -ti %PROJECT_NAME%-server-node^ bash -l -c "yarn install"
-
-    @rem Execute command
-    IF defined INTO_NODE (
-        echo ^> Into container instance
-        docker exec -ti %PROJECT_NAME%-server-node^ bash
+    IF defined BUILD_NODE (
+        echo ^> Publish server
+        docker build --rm^
+            -t msw.node:publish^
+            ./src/server/node
+        docker save ^
+            --output %cd%\cache\node\publish\node-server.tar^
+            msw.node:publish
     ) else (
-        echo ^> Start server
-        docker exec -ti %PROJECT_NAME%-server-node^ bash -l -c "yarn start"
+
+        echo ^> Build image
+        docker build --rm^
+            -t msw.node:%PROJECT_NAME%^
+            ./docker/server/node
+
+        echo ^> Startup docker container instance
+        docker rm -f %PROJECT_NAME%-server-node
+        docker run -ti -d ^
+            -v %cd%\src\server\node\:/repo^
+            -v %cd%\cache\node\modules/:/repo/node_modules^
+            -p 8001:3000^
+            --name %PROJECT_NAME%-server-node^
+            msw.node:%PROJECT_NAME%
+
+        echo ^> Install package dependencies
+        docker exec -ti %PROJECT_NAME%-server-node bash -l -c "yarn install"
+
+        @rem Execute command
+        IF defined DEVELOPER_NODE (
+            echo ^> Start deveopment server
+            docker exec -ti %PROJECT_NAME%-server-node bash -l -c "yarn start"
+        )
+        IF defined INTO_NODE (
+            echo ^> Into container instance
+            docker exec -ti %PROJECT_NAME%-server-node bash
+        )
     )
     goto end
 )
 
 :cli-node-args (
+    set BUILD_NODE=1
     for %%p in (%*) do (
+        if "%%p"=="--dev" (
+            set DEVELOPER_NODE=1
+            set BUILD_NODE=
+        )
         if "%%p"=="--into" (
             set INTO_NODE=1
+            set BUILD_NODE=
         )
     )
     goto end
@@ -419,7 +441,7 @@ goto end
         docker exec -ti %PROJECT_NAME%-server-dotnet bash
     )
     IF defined BUILD_DOTNET (
-        echo ^> Start server
+        echo ^> Publish server
         docker exec -ti %PROJECT_NAME%-server-dotnet bash -l -c "dotnet publish --configuration Release"
     )
     goto end
