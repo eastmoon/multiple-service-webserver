@@ -354,7 +354,7 @@ goto end
         msw.node:%PROJECT_NAME%
 
     echo ^> Install package dependencies
-    ::docker exec -ti %PROJECT_NAME%-server-node^ bash -l -c "yarn install"
+    docker exec -ti %PROJECT_NAME%-server-node^ bash -l -c "yarn install"
 
     @rem Execute command
     IF defined INTO_NODE (
