@@ -8,6 +8,19 @@
 + Client
   - react
   - vue
+  - angular
+
+### Server
+
+#### .NET Core
+
+#### Node.js + LoopBack
+
+使用 loopback cli 工具建立專案，此工具會在 Docker 映像檔階段安裝到專案
+> [LoopBack CLI](https://loopback.io/doc/en/lb4/Command-line-interface.html)
+
+
+### Client
 
 #### React
 
@@ -15,7 +28,7 @@
 > [Github : Create React App](https://github.com/facebook/create-react-app)
 
 ```
-npx create-react-app .
+npx create-react-app react
 ```
 > [How to use npx: the npm package runner](https://blog.scottlogic.com/2018/04/05/npx-the-npm-package-runner.html)
 
@@ -27,8 +40,20 @@ npx create-react-app .
 > [Github : Create Vue App](https://github.com/vue-land/create-vue-app)
 
 ```
-npx create-vue-app .
+npx create-vue-app vue
 ```
 > [How to use npx: the npm package runner](https://blog.scottlogic.com/2018/04/05/npx-the-npm-package-runner.html)
 
 + ```dockerw vue --dev``` 啟動 vue 專案的開發伺服器，Dev Server 4000、Docker port: 8082
+
+#### Angular
+
+使用 angluar-cli 工具建立專案，此工具會在 Docker 映像檔階段安裝到專案或用 ```npx``` 產生
+> [Angular CLI](https://cli.angular.io/)
+
+```
+npx @angular/cli new angular
+```
+> [How to use npx: the npm package runner](https://blog.scottlogic.com/2018/04/05/npx-the-npm-package-runner.html)
+
++ ```dockerw vue --dev``` 啟動 vue 專案的開發伺服器，Dev Server 4200、Docker port: 8083
