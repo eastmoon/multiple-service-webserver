@@ -386,6 +386,70 @@ goto end
     goto end
 )
 
+:: ------------------- Command "dotnet" mathod -------------------
+
+:cli-dotnet (
+    @rem Initial cache
+    IF NOT EXIST cache\dotnet\publish (
+        mkdir cache\dotnet\publish
+    )
+
+    echo ^> Build image
+    docker build --rm^
+        -t msw.dotnet:%PROJECT_NAME%^
+        ./docker/server/dotnet
+
+    echo ^> Startup docker container instance
+    docker rm -f %PROJECT_NAME%-server-dotnet
+    docker run -ti -d ^
+        -v %cd%\src\server\dotnet\:/repo^
+        -v %cd%\cache\dotnet\publish\:/repo/bin^
+        -p 5000:5000^
+        -p 5001:5001^
+        --name %PROJECT_NAME%-server-dotnet^
+        msw.dotnet:%PROJECT_NAME%
+
+    @rem Execute command
+    IF defined DEVELOPER_DOTNET (
+        echo ^> Start deveopment server
+        docker exec -ti %PROJECT_NAME%-server-dotnet bash -l -c "dotnet run"
+    )
+    IF defined INTO_DOTNET (
+        echo ^> Into container instance
+        docker exec -ti %PROJECT_NAME%-server-dotnet bash
+    )
+    IF defined BUILD_DOTNET (
+        echo ^> Start server
+        docker exec -ti %PROJECT_NAME%-server-dotnet bash -l -c "dotnet publish --configuration Release"
+    )
+    goto end
+)
+
+:cli-dotnet-args (
+    set BUILD_DOTNET=1
+    for %%p in (%*) do (
+        if "%%p"=="--dev" (
+            set DEVELOPER_DOTNET=1
+            set BUILD_DOTNET=
+        )
+        if "%%p"=="--into" (
+            set INTO_DOTNET=1
+            set BUILD_DOTNET=
+        )
+    )
+    goto end
+)
+
+:cli-dotnet-help (
+    echo Build angular.js project.
+    echo.
+    echo Options:
+    echo      --dev             Run dev mode.
+    echo      --into            Go into container.
+    echo.
+    goto end
+)
+
 :: ------------------- End method-------------------
 
 :end (

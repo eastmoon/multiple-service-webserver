@@ -14,6 +14,40 @@
 
 #### .NET Core
 
+使用 dotnet cli 工具建立專案，此工具可直接引用 [mcr.microsoft.com/dotnet/core/sdk](https://hub.docker.com/_/microsoft-dotnet-sdk) 的 Docker 容器；相關操作細節可參考如下說明：
+
++ [.NET CLI 總覽](https://docs.microsoft.com/zh-tw/dotnet/core/tools/)
+    - [利用 dotnet CLI 安裝並使用套件](https://docs.microsoft.com/zh-tw/nuget/quickstart/install-and-use-a-package-using-the-dotnet-cli)
+    - [使用 ASP.NET Core 建立 web API](https://docs.microsoft.com/zh-tw/aspnet/core/tutorials/first-web-api?view=aspnetcore-2.2&tabs=visual-studio-code)
+
++ 建立 WebAPI 專案
+
+```
+dotnet new webapi -o TodoAPI
+```
+
++ 重建相依
+
+```
+dotnet build
+```
+> 在執行  ```dotnet run``` 時，會自動執行此一動作
+
++ 測試執行
+
+```
+cd TodoAPI
+dotnet run
+```
+> 相同指令在 conssole 與 webapi 專案中會有不同的效果
+
++ 發佈
+
+```
+dotnet publish --configuration Release
+```
+> [dotnet publish](https://docs.microsoft.com/zh-tw/dotnet/core/tools/dotnet-publish) 是將應用程式及其相依性發行至資料夾，以部署至 Runtime 容器中
+
 #### Node.js + LoopBack
 
 使用 loopback cli 工具建立專案，此工具會在 Docker 映像檔階段安裝到專案
