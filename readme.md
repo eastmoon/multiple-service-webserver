@@ -19,6 +19,12 @@
 使用 loopback cli 工具建立專案，此工具會在 Docker 映像檔階段安裝到專案
 > [LoopBack CLI](https://loopback.io/doc/en/lb4/Command-line-interface.html)
 
+```
+lb4 app
+```
+> 透過 loopback cli 指令 ```lb4``` 進行相關專案的操控，此部分可參考上述或相關說明
+
+此框架基於 OpenAPI 與 DDD 開發概念設計，但在 4.X 與 3.X 版本中差距甚多，選用需注意。
 
 ### Client
 
