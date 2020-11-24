@@ -332,6 +332,59 @@ goto end
     goto end
 )
 
+:: ------------------- Command "node" mathod -------------------
+
+:cli-node (
+    @rem Initial cache
+    IF NOT EXIST cache\node\modules (
+        mkdir cache\node\modules
+    )
+    echo ^> Build image
+    docker build --rm^
+        -t msw.node:%PROJECT_NAME%^
+        ./docker/server/node
+
+    echo ^> Startup docker container instance
+    docker rm -f %PROJECT_NAME%-server-node
+    docker run -ti -d ^
+        -v %cd%\src\server\node\:/repo^
+        -v %cd%\cache\node\modules/:/repo/node_modules^
+        -p 8000:3000^
+        --name %PROJECT_NAME%-server-node^
+        msw.node:%PROJECT_NAME%
+
+    echo ^> Install package dependencies
+    ::docker exec -ti %PROJECT_NAME%-server-node^ bash -l -c "yarn install"
+
+    @rem Execute command
+    IF defined INTO_NODE (
+        echo ^> Into container instance
+        docker exec -ti %PROJECT_NAME%-server-node^ bash
+    ) else (
+        echo ^> Start server
+        docker exec -ti %PROJECT_NAME%-server-node^ bash -l -c "yarn start"
+    )
+    goto end
+)
+
+:cli-node-args (
+    for %%p in (%*) do (
+        if "%%p"=="--into" (
+            set INTO_NODE=1
+        )
+    )
+    goto end
+)
+
+:cli-node-help (
+    echo Build angular.js project.
+    echo.
+    echo Options:
+    echo      --dev             Run dev mode.
+    echo      --into            Go into container.
+    echo.
+    goto end
+)
 
 :: ------------------- End method-------------------
 
