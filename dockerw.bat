@@ -117,6 +117,9 @@ goto end
     echo Command:
     echo      react             Build client website for react.js.
     echo      vue               Build client website for vue.
+    echo      angular           Build client website for angular.
+    echo      node              Control node server.
+    echo      dotnet            Control .net core server.
     echo.
     echo Run 'cli [COMMAND] --help' for more information on a command.
     goto end
@@ -126,11 +129,11 @@ goto end
 
 :cli-react (
     @rem Initial cache
-    IF NOT EXIST cache\clietn-react\modules (
-        mkdir cache\client-react\modules
+    IF NOT EXIST cache\react\modules (
+        mkdir cache\react\modules
     )
-    IF NOT EXIST cache\client-react\publish (
-        mkdir cache\client-react\publish
+    IF NOT EXIST cache\react\publish (
+        mkdir cache\react\publish
     )
     echo ^> Build image
     docker build --rm^
@@ -141,8 +144,8 @@ goto end
     docker rm -f %PROJECT_NAME%-client-react
     docker run -ti -d ^
         -v %cd%\src\client\react\:/repo^
-        -v %cd%\cache\client-react\modules/:/repo/node_modules^
-        -v %cd%\cache\client-react\publish/:/repo/dist^
+        -v %cd%\cache\react\modules/:/repo/node_modules^
+        -v %cd%\cache\react\publish/:/repo/dist^
         -p 8081:3000^
         --name %PROJECT_NAME%-client-react^
         msw.react:%PROJECT_NAME%
@@ -195,11 +198,11 @@ goto end
 
 :cli-vue (
     @rem Initial cache
-    IF NOT EXIST cache\clietn-vue\modules (
-        mkdir cache\client-vue\modules
+    IF NOT EXIST cache\vue\modules (
+        mkdir cache\vue\modules
     )
-    IF NOT EXIST cache\client-vue\publish (
-        mkdir cache\client-vue\publish
+    IF NOT EXIST cache\vue\publish (
+        mkdir cache\vue\publish
     )
     echo ^> Build image
     docker build --rm^
@@ -210,8 +213,8 @@ goto end
     docker rm -f %PROJECT_NAME%-client-vue
     docker run -ti -d ^
         -v %cd%\src\client\vue\:/repo^
-        -v %cd%\cache\client-vue\modules/:/repo/node_modules^
-        -v %cd%\cache\client-vue\publish/:/repo/dist^
+        -v %cd%\cache\vue\modules/:/repo/node_modules^
+        -v %cd%\cache\vue\publish/:/repo/dist^
         -p 8082:4000^
         --name %PROJECT_NAME%-client-vue^
         msw.vue:%PROJECT_NAME%
@@ -259,6 +262,76 @@ goto end
     echo.
     goto end
 )
+
+:: ------------------- Command "angular" mathod -------------------
+
+:cli-angular (
+    @rem Initial cache
+    IF NOT EXIST cache\angular\modules (
+        mkdir cache\angular\modules
+    )
+    IF NOT EXIST cache\angular\publish (
+        mkdir cache\angular\publish
+    )
+    echo ^> Build image
+    docker build --rm^
+        -t msw.angular:%PROJECT_NAME%^
+        ./docker/client/angular
+
+    echo ^> Startup docker container instance
+    docker rm -f %PROJECT_NAME%-client-angular
+    docker run -ti -d ^
+        -v %cd%\src\client\angular\:/repo^
+        -v %cd%\cache\angular\modules/:/repo/node_modules^
+        -v %cd%\cache\angular\publish/:/repo/dist^
+        -p 8083:4200^
+        --name %PROJECT_NAME%-client-angular^
+        msw.angular:%PROJECT_NAME%
+
+    echo ^> Install package dependencies
+    docker exec -ti %PROJECT_NAME%-client-angular^ bash -l -c "yarn install"
+
+    @rem Execute command
+    IF defined DEVELOPER_ANGULAR (
+        echo ^> Start deveopment server
+        docker exec -ti %PROJECT_NAME%-client-angular^ bash -l -c "ng serve --host 0.0.0.0"
+    )
+    IF defined INTO_ANGULAR (
+        echo ^> Into container instance
+        docker exec -ti %PROJECT_NAME%-client-angular^ bash
+    )
+    IF defined BUILD_ANGULAR (
+        echo ^> Build project
+        docker exec -ti %PROJECT_NAME%-client-angular^ bash -l -c "yarn build"
+    )
+    goto end
+)
+
+:cli-angular-args (
+    set BUILD_ANGULAR=1
+    for %%p in (%*) do (
+        if "%%p"=="--dev" (
+            set DEVELOPER_ANGULAR=1
+            set BUILD_ANGULAR=
+        )
+        if "%%p"=="--into" (
+            set INTO_ANGULAR=1
+            set BUILD_ANGULAR=
+        )
+    )
+    goto end
+)
+
+:cli-angular-help (
+    echo Build angular.js project.
+    echo.
+    echo Options:
+    echo      --dev             Run dev mode.
+    echo      --into            Go into container.
+    echo.
+    goto end
+)
+
 
 :: ------------------- End method-------------------
 
