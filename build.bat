@@ -7,4 +7,5 @@ call dockerw angular
 
 @rem Build server
 
+call dockerw node
 call dockerw dotnet
