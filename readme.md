@@ -26,6 +26,8 @@ lb4 app
 
 此框架基於 OpenAPI 與 DDD 開發概念設計，但在 4.X 與 3.X 版本中差距甚多，選用需注意。
 
++ ```dockerw react``` 啟動專案的伺服器，Server 3000、Docker port: 8001
+
 ### Client
 
 #### React

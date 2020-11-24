@@ -349,7 +349,7 @@ goto end
     docker run -ti -d ^
         -v %cd%\src\server\node\:/repo^
         -v %cd%\cache\node\modules/:/repo/node_modules^
-        -p 8000:3000^
+        -p 8001:3000^
         --name %PROJECT_NAME%-server-node^
         msw.node:%PROJECT_NAME%
 
