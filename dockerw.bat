@@ -349,7 +349,7 @@ goto end
             -t msw.node:publish^
             ./src/server/node
         docker save ^
-            --output %cd%\cache\node\publish\node-server.tar^
+            --output %cd%\cache\node\publish\server.tar^
             msw.node:publish
     ) else (
 
@@ -379,6 +379,9 @@ goto end
             echo ^> Into container instance
             docker exec -ti %PROJECT_NAME%-server-node bash
         )
+
+        @rem close server
+        docker rm -f %PROJECT_NAME%-server-node
     )
     goto end
 )

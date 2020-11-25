@@ -24,5 +24,9 @@ RUN npm run build
 # Bind to all network interfaces so that it can be mapped to the host OS
 ENV HOST=0.0.0.0 PORT=3000
 
+RUN mkdir -p /home/node/log
+RUN \
+    echo "node . >> /home/node/log/app.log 2>&1 &" > docker-entrypoint.sh && \
+    echo "tail -f /dev/null" >> docker-entrypoint.sh
 EXPOSE ${PORT}
-CMD [ "node", "." ]
+CMD [ "/bin/bash", "docker-entrypoint.sh"]
