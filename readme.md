@@ -1,6 +1,6 @@
 ## 多服務網路伺服器
 
-此專案為一個多服務來源的整合網站伺服器，透過 .NET 做路由來統一路由運作
+此專案為一個多服務來源的整合網站伺服器，透過 Nginx 做路由來統一路由運作
 
 + Server
   - node.js
@@ -9,6 +9,48 @@
   - react
   - vue
   - angular
+
+### 專案操作
+
++ 操作各專案開發、測試、編譯指令
+
+```
+dockerw.bat [react | vue | angular | node | dotnet] [--dev | --into]
+```
+> 此功能會啟動獨立編寫用的開發容器
+
++ 編譯全專案
+
+```
+build.bat
+```
+> 呼叫全部專案 dockerw 指令
+
++ 操作整合服務
+
+```
+service.bat [start | down]
+```
+> 此功能透過 docker-compose 啟動複數容器來建立主機關係
+
+測試專案是否正常可以使用以下網址
+
++ http://localhost:4444/
++ http://localhost:4444/react/
++ http://localhost:4444/vue/
++ http://localhost:4444/node/
++ http://localhost:4444/dotnet/api/values
+
+由於範本 react、vue 要能正常執行必需為根目錄，在此不多加調整；若要正常顯示可調整 ```docker/docker-compose-dev.yml``` 中相關設定
+
+```
+services:
+  nginx:
+    volumes:
+      - ../cache/angular/publish/repo/:/usr/share/nginx/html
+      - ../cache/react/publish/:/usr/share/nginx/html/react/
+```
+> 透過調換目錄達到切換網頁根層會顯示的內容，這邊須注意，此處前端的錯誤可透過調整 webpack 的 publish path 調整。
 
 ### Server
 
