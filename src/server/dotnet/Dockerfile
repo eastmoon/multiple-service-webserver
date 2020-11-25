@@ -11,19 +11,32 @@ RUN \
         aspnetcore-runtime-2.2
 RUN rm packages-microsoft-prod.deb
 
-# Create app directory
+# Create dotnet app directory
 
-RUN mkdir -p /app
-WORKDIR /app
+# Set to a non-root built-in user `dotnet`
+RUN \
+    groupadd -r dotnet && \
+    useradd -r -g dotnet dotnet && \
+    mkdir -p /home/dotnet && \
+    chown dotnet:dotnet /home/dotnet && \
+    chmod 777 /home/dotnet
+
+USER dotnet
+
+# Create app directory (with user `dotnet`)
+RUN mkdir -p /home/dotnet/app
+
+WORKDIR /home/dotnet/app
 
 # Bundle app source code
-COPY ./published /app
+COPY --chown=node ./published .
 
 # Bind to all network interfaces so that it can be mapped to the host OS
 ENV HOST=0.0.0.0 PORT=5000
 
+RUN mkdir -p /home/dotnet/log
 RUN \
-    echo "dotnet Main.dll >> /var/log/dotnet.log 2>&1 &" > docker-entrypoint.sh && \
+    echo "dotnet Main.dll >> /home/dotnet/log/app.log 2>&1 &" > docker-entrypoint.sh && \
     echo "tail -f /dev/null" >> docker-entrypoint.sh
 EXPOSE ${PORT}
 CMD [ "/bin/bash", "docker-entrypoint.sh"]
