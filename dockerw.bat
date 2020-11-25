@@ -151,21 +151,24 @@ goto end
         msw.react:%PROJECT_NAME%
 
     echo ^> Install package dependencies
-    docker exec -ti %PROJECT_NAME%-client-react^ bash -l -c "yarn install"
+    docker exec -ti %PROJECT_NAME%-client-react bash -l -c "yarn install"
 
     @rem Execute command
     IF defined DEVELOPER_REACT (
         echo ^> Start deveopment server
-        docker exec -ti %PROJECT_NAME%-client-react^ bash -l -c "yarn start"
+        docker exec -ti %PROJECT_NAME%-client-react bash -l -c "yarn start"
     )
     IF defined INTO_REACT (
         echo ^> Into container instance
-        docker exec -ti %PROJECT_NAME%-client-react^ bash
+        docker exec -ti %PROJECT_NAME%-client-react bash
     )
     IF defined BUILD_REACT (
         echo ^> Build project
-        docker exec -ti %PROJECT_NAME%-client-react^ bash -l -c "yarn build"
+        docker exec -ti %PROJECT_NAME%-client-react bash -l -c "yarn build"
     )
+
+    @rem close server
+    docker rm -f %PROJECT_NAME%-client-react
     goto end
 )
 
@@ -220,21 +223,24 @@ goto end
         msw.vue:%PROJECT_NAME%
 
     echo ^> Install package dependencies
-    docker exec -ti %PROJECT_NAME%-client-vue^ bash -l -c "yarn install"
+    docker exec -ti %PROJECT_NAME%-client-vue bash -l -c "yarn install"
 
     @rem Execute command
     IF defined DEVELOPER_VUE (
         echo ^> Start deveopment server
-        docker exec -ti %PROJECT_NAME%-client-vue^ bash -l -c "yarn dev"
+        docker exec -ti %PROJECT_NAME%-client-vue bash -l -c "yarn dev"
     )
     IF defined INTO_VUE (
         echo ^> Into container instance
-        docker exec -ti %PROJECT_NAME%-client-vue^ bash
+        docker exec -ti %PROJECT_NAME%-client-vue bash
     )
     IF defined BUILD_VUE (
         echo ^> Build project
-        docker exec -ti %PROJECT_NAME%-client-vue^ bash -l -c "yarn build"
+        docker exec -ti %PROJECT_NAME%-client-vue bash -l -c "yarn build"
     )
+
+    @rem close server
+    docker rm -f %PROJECT_NAME%-client-vue
     goto end
 )
 
@@ -289,21 +295,24 @@ goto end
         msw.angular:%PROJECT_NAME%
 
     echo ^> Install package dependencies
-    docker exec -ti %PROJECT_NAME%-client-angular^ bash -l -c "yarn install"
+    docker exec -ti %PROJECT_NAME%-client-angular bash -l -c "yarn install"
 
     @rem Execute command
     IF defined DEVELOPER_ANGULAR (
         echo ^> Start deveopment server
-        docker exec -ti %PROJECT_NAME%-client-angular^ bash -l -c "ng serve --host 0.0.0.0"
+        docker exec -ti %PROJECT_NAME%-client-angular bash -l -c "ng serve --host 0.0.0.0"
     )
     IF defined INTO_ANGULAR (
         echo ^> Into container instance
-        docker exec -ti %PROJECT_NAME%-client-angular^ bash
+        docker exec -ti %PROJECT_NAME%-client-angular bash
     )
     IF defined BUILD_ANGULAR (
         echo ^> Build project
-        docker exec -ti %PROJECT_NAME%-client-angular^ bash -l -c "yarn build"
+        docker exec -ti %PROJECT_NAME%-client-angular bash -l -c "yarn build"
     )
+
+    @rem close server
+    docker rm -f %PROJECT_NAME%-client-angular
     goto end
 )
 
