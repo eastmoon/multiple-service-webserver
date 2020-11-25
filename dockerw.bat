@@ -425,7 +425,6 @@ goto end
     docker rm -f %PROJECT_NAME%-server-dotnet
     docker run -ti -d ^
         -v %cd%\src\server\dotnet\:/repo^
-        -v %cd%\cache\dotnet\publish\:/repo/bin^
         -p 5000:5000^
         -p 5001:5001^
         --name %PROJECT_NAME%-server-dotnet^
@@ -442,8 +441,17 @@ goto end
     )
     IF defined BUILD_DOTNET (
         echo ^> Publish server
-        docker exec -ti %PROJECT_NAME%-server-dotnet bash -l -c "dotnet publish --configuration Release"
+        docker exec -ti %PROJECT_NAME%-server-dotnet bash -l -c "rm -rf published && dotnet publish --configuration Release -o published"
+        docker build --rm^
+            -t msw.dotnet:publish^
+            ./src/server/dotnet
+        docker save ^
+            --output %cd%\cache\dotnet\publish\server.tar^
+            msw.dotnet:publish
     )
+
+    @rem close server
+    docker rm -f %PROJECT_NAME%-server-dotnet
     goto end
 )
 
