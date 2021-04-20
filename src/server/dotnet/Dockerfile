@@ -29,7 +29,7 @@ RUN mkdir -p /home/dotnet/app
 WORKDIR /home/dotnet/app
 
 # Bundle app source code
-COPY --chown=node ./published .
+COPY --chown=dotnet ./published .
 
 # Bind to all network interfaces so that it can be mapped to the host OS
 ENV HOST=0.0.0.0 PORT=5000
